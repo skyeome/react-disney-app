@@ -20,8 +20,9 @@
 
 @media (max-width: 768px) {
   .banner__contents {
-    width: min-content !important;
+    /* width: min-content !important; */
     padding-left: 2.3rem;
+    padding-right: 1rem;
     margin-left: 0px !important;
   }
 
@@ -48,6 +49,7 @@
 .banner__contents {
   margin-left: 40px;
   padding-top: 140px;
+  padding-right: 20px;
   height: 190px;
 }
 
@@ -65,6 +67,7 @@
   font-size: 1rem;
   max-width: 400px;
   height: 80px;
+  word-break: keep-all;
 }
 
 .banner--fadeBottom {

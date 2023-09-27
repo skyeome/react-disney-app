@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Nav = () => {
   const [show, setShow] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
 
   const onScroll = () => {
     if (window.scrollY > 50) {
@@ -10,6 +13,11 @@ const Nav = () => {
     } else {
       setShow(false);
     }
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    navigate(`search?q=${e.target.value}`);
   };
 
   useEffect(() => {
@@ -23,13 +31,46 @@ const Nav = () => {
   return (
     <NavWrapper $show={show}>
       <Logo>
-        <img alt="" src="" />
+        <img src="/images/logo.svg" alt="disney" />
       </Logo>
+      <Input
+        type="text"
+        placeholder="영화를 검색해주세요."
+        value={searchValue}
+        onChange={handleChange}
+      />
+      <Login>Login</Login>
     </NavWrapper>
   );
 };
 
 export default Nav;
+
+const Login = styled.a`
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  border: 1px solid #f9f9f9;
+  border-radius: 4px;
+  transition: all 0.2s ease 0s;
+  letter-spacing: initial;
+  cursor: pointer;
+  &:hover {
+    background-color: #f9f9f9;
+    color: #000;
+    border-color: transparent;
+  }
+`;
+
+const Input = styled.input`
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  color: white;
+  padding: 5px;
+  border: 1px solid lightgray;
+`;
 
 const NavWrapper = styled.nav<{ $show: boolean }>`
   position: fixed;
@@ -44,6 +85,7 @@ const NavWrapper = styled.nav<{ $show: boolean }>`
   padding: 0 36px;
   letter-spacing: 16px;
   z-index: 3;
+  transition: background-color 0.3s;
 `;
 
 const Logo = styled.a`
