@@ -6,12 +6,12 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC7JX9-gd9OUmtH6KnNbWgnfr2PWYUQJrI",
-  authDomain: "skyome-disney-clone-app.firebaseapp.com",
-  projectId: "skyome-disney-clone-app",
-  storageBucket: "skyome-disney-clone-app.appspot.com",
-  messagingSenderId: "267984254960",
-  appId: "1:267984254960:web:eae3ffe279b860ab3fcf35"
+  apiKey: "AIzaSyA-40uo4U6gVzVJNy2OIwi2zmhj1VDO-jY",
+  authDomain: "skyome-disney-plus.firebaseapp.com",
+  projectId: "skyome-disney-plus",
+  storageBucket: "skyome-disney-plus.appspot.com",
+  messagingSenderId: "231588506316",
+  appId: "1:231588506316:web:0b8775c08e506637a2f069"
 };
 
 // Initialize Firebase
