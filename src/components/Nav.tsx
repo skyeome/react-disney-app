@@ -1,11 +1,19 @@
+import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { auth, googleProvider } from "../firebase";
 
 const Nav = () => {
+  const localUserData = localStorage.getItem("userData");
+  const initialUserData =
+    localUserData !== null ? JSON.parse(localUserData) : null;
+
   const [show, setShow] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [userData, setUserData] = useState(initialUserData);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const onScroll = () => {
     if (window.scrollY > 50) {
@@ -19,6 +27,26 @@ const Nav = () => {
     setSearchValue(e.target.value);
     navigate(`search?q=${e.target.value}`);
   };
+  const handleAuth = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        setUserData(result.user);
+        localStorage.setItem("userData", JSON.stringify(result.user));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUserData(null);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
@@ -28,18 +56,47 @@ const Nav = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate("/");
+      } else if (user && pathname === "/") {
+        navigate("/main");
+      }
+    });
+    window.addEventListener("scroll", onScroll);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [auth, navigate, pathname]);
+
   return (
     <NavWrapper $show={show}>
       <Logo>
         <img src="/images/logo.svg" alt="disney" />
       </Logo>
-      <Input
-        type="text"
-        placeholder="영화를 검색해주세요."
-        value={searchValue}
-        onChange={handleChange}
-      />
-      <Login>Login</Login>
+      {pathname === "/" ? (
+        <Login onClick={handleAuth}>Login</Login>
+      ) : (
+        <>
+          <Input
+            type="text"
+            placeholder="영화를 검색해주세요."
+            value={searchValue}
+            onChange={handleChange}
+          />
+          <SignOut>
+            <UserImg
+              src={userData?.photoURL !== null ? userData?.photoURL : ""}
+            />
+            <DropDown onClick={handleSignOut}>
+              <span>Sign Out</span>
+            </DropDown>
+          </SignOut>
+        </>
+      )}
     </NavWrapper>
   );
 };
@@ -100,4 +157,40 @@ const Logo = styled.a`
     display: block;
     width: 100%;
   }
+`;
+
+const DropDown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0px;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100px;
+  opacity: 0;
+`;
+
+const SignOut = styled.div`
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
+`;
+
+const UserImg = styled.img`
+  height: 100%;
+  border-radius: 50%;
 `;
