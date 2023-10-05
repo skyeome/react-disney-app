@@ -49,14 +49,6 @@ const Nav = () => {
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", onScroll);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
-
-  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
         navigate("/");
@@ -75,7 +67,7 @@ const Nav = () => {
   return (
     <NavWrapper $show={show}>
       <Logo>
-        <img src="/images/logo.svg" alt="disney" />
+        <img src="/images/logo.svg" alt="Disney Plus Logo" />
       </Logo>
       {pathname === "/" ? (
         <Login onClick={handleAuth}>Login</Login>
